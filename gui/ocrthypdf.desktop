@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=OCRmyPDF
+GenericName=Document Encryption
+Comment=OCR for PDF files
+Exec=ocrthypdf
+Icon=${SNAP}/gui/ocrthypdf.svg
+Terminal=false
+Type=Application
+Categories=Utility;
+StartupNotify=true
