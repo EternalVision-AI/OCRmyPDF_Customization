@@ -33,7 +33,7 @@ import logging
 import argparse
 import darkdetect
 import uuid
-
+import os
 
 iconstring=b'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'
 
@@ -325,7 +325,6 @@ def startSplitJob (filename, Job):
         args = args + '-r '    
     '''
     
-    args = args + '--tesseract-timeout 600' + ' '
     args = args + '--tesseract-downsample-large-images' + ' '
     args = args + '--tesseract-downsample-above 5000' + ' '
     args = args + '--invalidate-digital-signatures' + ' '
@@ -391,12 +390,26 @@ def startOCRJob (filename, Job):
     ocrJobs = tmpOptions['opt_jobs']
     args = args + '--jobs '+ ocrJobs + ' '
 
+    # ocr tesseract time out
+    ocrTimeout = tmpOptions['opt_timeout']
+    args = args + '--tesseract-timeout '+ ocrTimeout + ' '
+
     # ocr PDF page segmentation mode
     ocrPsm = tmpOptions['opt_psm']
-    psmArr = ['Orientation and script detection (OSD) only', 'Automatic page segmentation with OSD', 'Automatic page segmentation, but no OSD', 'Fully automatic page segmentation, but no OSD (default)', 'Assume a single column of text of variable sizes', 'Assume a single uniform block of vertically aligned text', 'Assume a single uniform block of text', 'Treat the image as a single text line', 'Treat the image as a single word', 'Treat the image as a single character', 'Block segmentation, but no text line or word segmentation']
-    # for index, opt in enumerate(psmArr):
-    #     if ocrPsm == opt:
-    #         args=args + "--tessedit_pageseg_mode " + str(index) + " "
+    psmArr = ['0: Orientation and script detection (OSD) only', '1: Automatic page segmentation with OSD', '2: Automatic page segmentation, but no OSD', '3: Fully automatic page segmentation, but no OSD (default)', '4: Assume a single column of text of variable sizes', '5: Assume a single uniform block of vertically aligned text', '6: Assume a single uniform block of text', '7: Treat the image as a single text line', '8: Treat the image as a single word', '9: Treat the image as a single character', '10: Block segmentation, but no text line or word segmentation']
+    for index, opt in enumerate(psmArr):
+        if ocrPsm == opt:
+            configStr = ""
+            configStr = "tessedit_pageseg_mode " + str(index) + "\n"
+            # Define the file path
+            file_path = "tesseract_config.txt"
+            # Check if the file already exists
+            if os.path.exists(file_path):
+                # Delete the file if it exists
+                os.remove(file_path)
+            # Create a new file and write the configuration into it
+            with open(file_path, 'w') as config_file:
+                config_file.write(configStr)
     args=args + "--tesseract-config tesseract_config.txt "
 
     # ocr strategy --redo-ocr --force-ocr
@@ -409,7 +422,7 @@ def startOCRJob (filename, Job):
         args=args + "--skip-text "     
     # clean
     clean = tmpOptions['opt_noise']
-    if clean == "Clean for OCR but keep original page":
+    if clean == "Clean for OCR and keep original page":
         args=args + "--clean "
     elif clean == "Clean for OCR and keep cleaned page":
         args=args + "--clean-final "
@@ -548,7 +561,8 @@ log.debug('System language identified as: ' + systemLanguage)
 tab1_layout =   [
                     [sg.T('PDF Renderer:'), sg.InputCombo(('hocr', 'sandwich'), default_value='sandwich', key='opt_renderer', enable_events = True)],  
                     [sg.T('Use Multiple Cores:'), sg.InputCombo(('1', '2', '3', '4'), default_value='1', key='opt_jobs', enable_events = True)],  
-                    [sg.T('Page Segamentation Mode:'), sg.InputCombo(('Orientation and script detection (OSD) only', 'Automatic page segmentation with OSD', 'Automatic page segmentation, but no OSD', 'Fully automatic page segmentation, but no OSD (default)', 'Assume a single column of text of variable sizes', 'Assume a single uniform block of vertically aligned text', 'Assume a single uniform block of text', 'Treat the image as a single text line', 'Treat the image as a single word', 'Treat the image as a single character', 'Block segmentation, but no text line or word segmentation'), default_value='Assume a single column of text of variable sizes', key='opt_psm', enable_events = True)],  
+                    [sg.T('Tesseract Time Out:'), sg.InputCombo(('100', '200', '300', '400', '500', '600'), default_value='600', key='opt_timeout', enable_events = True)],  
+                    [sg.T('Page Segamentation Mode:'), sg.InputCombo(('0: Orientation and script detection (OSD) only', '1: Automatic page segmentation with OSD', '2: Automatic page segmentation, but no OSD', '3: Fully automatic page segmentation, but no OSD (default)', '4: Assume a single column of text of variable sizes', '5: Assume a single uniform block of vertically aligned text', '6: Assume a single uniform block of text', '7: Treat the image as a single text line', '8: Treat the image as a single word', '9: Treat the image as a single character', '10: Block segmentation, but no text line or word segmentation'), default_value='4: Assume a single column of text of variable sizes', key='opt_psm', enable_events = True)],  
                     [sg.T('Existing text/OCR strategy:'), sg.InputCombo(('Skip pages with text', 'Redo OCR', 'Force OCR'), default_value='Force OCR', key='opt_ocr', enable_events = True)],  
                     [sg.T('Deskew pages (crooked scans):', tooltip = 'Will correct pages scanned at a skewed angle by rotating them back into place.'),sg.InputCombo(('yes', 'no'), default_value='yes', key='opt_deskew', enable_events = True, tooltip = 'Will correct pages scanned at a skewed angle by rotating them back into place.')],
                     [sg.T('Fix page rotation:', tooltip = 'Attempts to determine the correct orientation for each page and rotates the page if necessary.'),sg.InputCombo(('yes', 'no'), default_value='yes', key='opt_rotate', enable_events = True, tooltip = 'Attempts to determine the correct orientation for each page and rotates the page if necessary.')],
