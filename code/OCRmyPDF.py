@@ -394,6 +394,10 @@ def startOCRJob (filename, Job):
     ocrTimeout = tmpOptions['opt_timeout']
     args = args + '--tesseract-timeout '+ ocrTimeout + ' '
 
+    # ocr tesseract time out
+    ocrDownsample = tmpOptions['opt_downsample']
+    args = args + '--tesseract-downsample-above '+ ocrDownsample + ' '
+
     # ocr PDF page segmentation mode
     ocrPsm = tmpOptions['opt_psm']
     psmArr = ['0: Orientation and script detection (OSD) only', '1: Automatic page segmentation with OSD', '2: Automatic page segmentation, but no OSD', '3: Fully automatic page segmentation, but no OSD (default)', '4: Assume a single column of text of variable sizes', '5: Assume a single uniform block of vertically aligned text', '6: Assume a single uniform block of text', '7: Treat the image as a single text line', '8: Treat the image as a single word', '9: Treat the image as a single character', '10: Block segmentation, but no text line or word segmentation']
@@ -562,6 +566,7 @@ tab1_layout =   [
                     [sg.T('PDF Renderer:'), sg.InputCombo(('hocr', 'sandwich'), default_value='sandwich', key='opt_renderer', enable_events = True)],  
                     [sg.T('Use Multiple Cores:'), sg.InputCombo(('1', '2', '3', '4'), default_value='1', key='opt_jobs', enable_events = True)],  
                     [sg.T('Tesseract Time Out:'), sg.InputCombo(('100', '200', '300', '400', '500', '600'), default_value='600', key='opt_timeout', enable_events = True)],  
+                    [sg.T('Downsampled Resolution:'), sg.InputCombo(('1000', '2000', '3000', '4000', '5000'), default_value='5000', key='opt_downsample', enable_events = True)],  
                     [sg.T('Page Segamentation Mode:'), sg.InputCombo(('0: Orientation and script detection (OSD) only', '1: Automatic page segmentation with OSD', '2: Automatic page segmentation, but no OSD', '3: Fully automatic page segmentation, but no OSD (default)', '4: Assume a single column of text of variable sizes', '5: Assume a single uniform block of vertically aligned text', '6: Assume a single uniform block of text', '7: Treat the image as a single text line', '8: Treat the image as a single word', '9: Treat the image as a single character', '10: Block segmentation, but no text line or word segmentation'), default_value='4: Assume a single column of text of variable sizes', key='opt_psm', enable_events = True)],  
                     [sg.T('Existing text/OCR strategy:'), sg.InputCombo(('Skip pages with text', 'Redo OCR', 'Force OCR'), default_value='Force OCR', key='opt_ocr', enable_events = True)],  
                     [sg.T('Deskew pages (crooked scans):', tooltip = 'Will correct pages scanned at a skewed angle by rotating them back into place.'),sg.InputCombo(('yes', 'no'), default_value='yes', key='opt_deskew', enable_events = True, tooltip = 'Will correct pages scanned at a skewed angle by rotating them back into place.')],
